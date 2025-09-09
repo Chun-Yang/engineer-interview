@@ -1,10 +1,31 @@
+enum ColumnType {
+  Todo,
+  InProgress,
+  Done,
+}
+
 export function ChallengeComponent() {
+  const allColumnTypes = [
+    ColumnType.Todo,
+    ColumnType.InProgress,
+    ColumnType.Done,
+  ];
   return (
     <>
-      {/* Delete this h2, and add your own code here. */}
-      <h2 className="text-center py-48 text-xl text-gray-700">
-        Your code goes here
-      </h2>
+      {allColumnTypes.map((columnType) => (
+        <Column columnType={columnType} key={columnType} />
+      ))}
+      <AddTask />
     </>
   );
+}
+
+// TODO
+function Column(columnType: ColumnType) {
+  return <></>;
+}
+
+// TODO
+function AddTask() {
+  return <></>;
 }
