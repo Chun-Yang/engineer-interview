@@ -23,6 +23,17 @@ export function ChallengeComponent() {
     ColumnType.Done,
   ];
 
+  function handleAdd(content) {
+    const newItem = {
+      id: +new Date(),
+      content,
+    }
+    setItemsByColumn({
+      ...itemsByColumn,
+      [ColumnType.Todo]: itemsByColumn[ColumnType.Todo].concat([newItem]),
+    });
+  }
+
   function handleMove(
     item: Item,
     columTypeFrom: ColumnType,
@@ -42,7 +53,7 @@ export function ChallengeComponent() {
       {allColumnTypes.map((columnType) => (
         <Column key={columnType} columnType={columnType} onMove={handleMove} />
       ))}
-      <AddTask />
+      <AddTask onAdd={handleAdd}/>
     </div>
   );
 }
@@ -65,7 +76,7 @@ function Column({
 function AddTask({ onAdd }: { onAdd: (content: string) => void }) {
   const [content, setContent] = useState<string>("");
   return (
-    <div>
+    <div style={{display: 'flex'}}>
       <input
         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
         placeholder="Add Task"
