@@ -11,23 +11,24 @@ type Item = {
   content: string;
 };
 
+const AllColumnTypes = [
+    ColumnType.Todo,
+    ColumnType.InProgress,
+    ColumnType.Done,
+];
+
 export function ChallengeComponent() {
   const [itemsByColumn, setItemsByColumn] = useState({
     [ColumnType.Todo]: [],
     [ColumnType.InProgress]: [],
     [ColumnType.Done]: [],
   });
-  const allColumnTypes = [
-    ColumnType.Todo,
-    ColumnType.InProgress,
-    ColumnType.Done,
-  ];
 
   function handleAdd(content) {
-    const newItem = {
+    const newItem: Item = {
       id: +new Date(),
       content,
-    }
+    };
     setItemsByColumn({
       ...itemsByColumn,
       [ColumnType.Todo]: itemsByColumn[ColumnType.Todo].concat([newItem]),
@@ -49,19 +50,30 @@ export function ChallengeComponent() {
   }
 
   return (
-    <div>
-      {allColumnTypes.map((columnType) => (
-        <Column key={columnType} columnType={columnType} onMove={handleMove} />
-      ))}
-      <AddTask onAdd={handleAdd}/>
+    <div
+      style={{
+        padding: "20px 20px",
+      }}
+    >
+      <div style={{ display: "flex" }}>
+        {AllColumnTypes.map((columnType) => (
+          <Column
+            key={columnType}
+            columnType={columnType}
+            onMove={handleMove}
+            items={itemsByColumn[columnType]}
+          />
+        ))}
+      </div>
+      <AddTask onAdd={handleAdd} />
     </div>
   );
 }
 
-// TODO
 function Column({
   columnType,
   onMove,
+  items,
 }: {
   columnType: ColumnType;
   onMove: (
@@ -69,14 +81,48 @@ function Column({
     columTypeFrom: ColumnType,
     columTypeTo: ColumnType,
   ) => void;
+  items: Item[];
 }) {
-  return <></>;
+  function handleMoveWithDirection(item: Item, direction: -1 | 1) {
+    const columTypeTo = columnType + direction;
+    if (!AllColumnTypes.includes(columTypeTo)) {
+      throw new Error(`Invalid column type: ${columTypeTo}`);
+    }
+    onMove(item, columnType, columTypeTo);
+  }
+  return (
+    <div
+      style={{
+        border: "2px solid black",
+        width: "100%",
+        minHeight: "200px",
+      }}
+    >
+      {items.map((item) => {
+        return (
+          <div
+            style={{
+              width: "100%",
+              padding: "5px",
+              display: "flex",
+              justifyContent: "space-between",
+            }}
+            key={item.id}
+          >
+            <button onClick={() => handleMoveWithDirection(item, -1)}>←</button>
+            {item.content}
+            <button onClick={() => handleMoveWithDirection(item, 1)}>→</button>
+          </div>
+        );
+      })}
+    </div>
+  );
 }
 
 function AddTask({ onAdd }: { onAdd: (content: string) => void }) {
   const [content, setContent] = useState<string>("");
   return (
-    <div style={{display: 'flex'}}>
+    <div style={{ display: "flex" }}>
       <input
         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
         placeholder="Add Task"
