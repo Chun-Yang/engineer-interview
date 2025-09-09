@@ -4,13 +4,17 @@ import {Column} from './lib/Column';
 import {AddTask} from './lib/AddTask';
 
 export function ChallengeComponent() {
-  const [itemsByColumn, setItemsByColumn] = useState({
+  const [itemsByColumn, setItemsByColumn] = useState<{
+    [ColumnType.Todo]: Item[],
+    [ColumnType.InProgress]: Item[],
+    [ColumnType.Done]: Item[],
+  }>({
     [ColumnType.Todo]: [],
     [ColumnType.InProgress]: [],
     [ColumnType.Done]: [],
   });
 
-  function handleAdd(content) {
+  function handleAdd(content: string) {
     const newItem: Item = {
       id: +new Date(),
       content,
